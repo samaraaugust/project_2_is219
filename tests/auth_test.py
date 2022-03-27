@@ -15,3 +15,6 @@ def test_auth_pages(client):
     assert response.status_code == 200
     response = client.get("/login")
     assert response.status_code == 200
+
+def test_bad_password_login(client):
+    """This tests whether proper message is shown when logging in with a bad a bad password"""
