@@ -8,3 +8,6 @@ database = Blueprint('database', __name__,)
 @database.cli.command('create')
 def init_db():
     db.create_all()
+
+def get_db():
+    return db
