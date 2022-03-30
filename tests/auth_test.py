@@ -36,18 +36,18 @@ def test_password_registration_bad(client):
 def test_successful_registration(client):
     assert client.get("/register").status_code == 200
     response = client.post("/register", data={"email": "first2@email.com", "password": "tester", "confirm": "tester"})
-    assert response.headers["Location"] == "http://localhost/login"
+    assert response.headers["Location"] == "/login"
 
 def test_successful_login(client, auth):
     assert client.get("/login").status_code == 200
     response = auth.login()
-    assert response.headers["Location"] == "http://localhost/dashboard"
+    assert response.headers["Location"] == "/dashboard"
 
 @pytest.fixture()
 def test_already_registered(client):
     response = client.post("/register", data={"email": "first3@email.com", "password": "tester", "confirm": "tester"})
     response2 = client.post("/register", data={"email": "first3@email.com", "password": "tester", "confirm": "tester"})
-    assert "http://localhost/login" == response2.headers["Location"]
+    assert "/login" == response2.headers["Location"]
 
 def test_bad_confirmation(client):
     response = client.post("/register", data={"email": "tester@email.com", "password": "tester4", "confirm": "tester"})
@@ -63,7 +63,7 @@ def test_email_login(client):
 
 def test_dashboard_not_logged_in(client):
     response = client.get("/dashboard")
-    assert "http://localhost/login?next=%2Fdashboard" == response.headers["Location"]
+    assert response.headers["Location"] == "/login?next=%2Fdashboard"
 
 def test_dashboard_logged_in(client):
     response = client.post("/login", data={"email": "first@email.com", "password": "tester"})
