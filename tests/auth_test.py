@@ -34,7 +34,7 @@ def test_password_registration_bad(client):
     response = client.post("/register", data={"email": "sec@email.com", "password": "a", "confirm": "a"})
     assert b"Field must be between 6 and 35 characters long." in response.data
 
-@pytest.fixture()
+
 def test_successful_registration(client):
     """Successful registration redirects to login page"""
     assert client.get("/register").status_code == 200
@@ -47,7 +47,7 @@ def test_successful_login(client, auth):
     response = auth.login()
     assert response.headers["Location"] == "/dashboard"
 
-@pytest.fixture()
+
 def test_already_registered(client):
     """If an email is already registered it redirects to the login page"""
     response = client.post("/register", data={"email": "first3@email.com", "password": "tester", "confirm": "tester"})
