@@ -76,7 +76,7 @@ def test_dashboard_not_logged_in(client):
 
 def test_dashboard_logged_in(client):
     """If user is logged in can access dashboard page"""
-    response = client.post("/login", data={"email": "first@email.com", "password": "tester"})
+    response = client.post("/login", data={"email": "first@email.com", "password": "Tester1"})
     response2 = client.get("/dashboard")
     assert b"Welcome: first@email.com" in response2.data
     assert b"Dashboard" in response2.data
