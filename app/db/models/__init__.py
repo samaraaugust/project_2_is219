@@ -5,10 +5,14 @@ from flask_login._compat import unicode
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.db import db
 from flask_login import UserMixin
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Location(db.Model):
+class Location(db.Model, SerializerMixin):
     __tablename__ = 'locations'
+    serialize_only = ('title', 'longitude', 'latitude')
+
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(300), nullable=True, unique=False)
     longitude = db.Column(db.String(300), nullable=True, unique=False)
@@ -22,6 +26,14 @@ class Location(db.Model):
         self.longitude = longitude
         self.latitude = latitude
         self.population = population
+
+    def serialize(self):
+        return {
+            'title': self.title,
+            'long': self.longitude,
+            'lat': self.latitude,
+            'population': self.population,
+        }
 
 
 

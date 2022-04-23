@@ -1,5 +1,6 @@
-from flask import Blueprint, url_for, render_template, abort, current_app
+from flask import Blueprint, url_for, render_template, abort, current_app, jsonify
 from jinja2 import TemplateNotFound
+import logging
 import os
 from app.db.models import Location
 import csv
@@ -20,6 +21,25 @@ def browse_locations(page):
     data = pagination.items
     try:
         return render_template('browse_locations.html',data=data,pagination=pagination)
+    except TemplateNotFound:
+        abort(404)
+
+@map.route('/api/locations/', methods=['GET'])
+def api_locations():
+    data = Location.query.all()
+    try:
+        return jsonify(data=[location.serialize() for location in data])
+    except TemplateNotFound:
+        abort(404)
+
+
+@map.route('/locations/map', methods=['GET'])
+def map_locations():
+    google_api_key = current_app.config.get('GOOGLE_API_KEY')
+    #log = logging.getLogger("myApp")
+    #log.info(google_api_key)
+    try:
+        return render_template('map_locations.html',google_api_key=google_api_key)
     except TemplateNotFound:
         abort(404)
 

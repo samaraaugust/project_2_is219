@@ -6,7 +6,10 @@
 <div class="row col-8">
     {% block title %}Browse: {{ record_type }}{% endblock %}
     {% block content %}
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between">
         <a href="{{ url_for("map.upload") }}" class="btn col-3 mb-5 btn-info" role="button">Upload Another File</a>
+        <a href="{{ url_for("map.map_locations") }}" class="btn col-3 mb-5 btn-info" role="button">Open Map</a>
+        </div>
         <h2>Locations</h2>
         {{ render_table(data) }}
 {#        {% from 'bootstrap5/pagination.html' import render_pagination %}#}
