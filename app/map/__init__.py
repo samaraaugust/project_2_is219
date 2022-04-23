@@ -11,6 +11,16 @@ from werkzeug.utils import secure_filename, redirect
 map = Blueprint('map', __name__,
                         template_folder='templates')
 
+@map.route('/locations_datatables/', methods=['GET'])
+def browse_locations_datatables():
+
+    data = Location.query.all()
+
+    try:
+        return render_template('browse_datatables.html',data=data)
+    except TemplateNotFound:
+        abort(404)
+
 
 @map.route('/locations', methods=['GET'], defaults={"page": 1})
 @map.route('/locations/<int:page>', methods=['GET'])
