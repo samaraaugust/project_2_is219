@@ -10,6 +10,19 @@ from werkzeug.utils import secure_filename, redirect
 map = Blueprint('map', __name__,
                         template_folder='templates')
 
+
+@map.route('/locations', methods=['GET'], defaults={"page": 1})
+@map.route('/locations/<int:page>', methods=['GET'])
+def browse_locations(page):
+    page = page
+    per_page = 20
+    pagination = Location.query.paginate(page, per_page, error_out=False)
+    data = pagination.items
+    try:
+        return render_template('browse_locations.html',data=data,pagination=pagination)
+    except TemplateNotFound:
+        abort(404)
+
 @map.route('/locations/upload', methods=['POST', 'GET'])
 @login_required
 def upload():
