@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, render_template, abort, current_app, jsonify
+from flask import Blueprint, url_for, render_template, abort, current_app, jsonify, flash
 from jinja2 import TemplateNotFound
 import logging
 import os
@@ -6,7 +6,7 @@ from app.db.models import Location
 import csv
 from app.db import db
 from flask_login import login_required, current_user
-from app.map.forms import csv_upload
+from app.map.forms import csv_upload, edit_location, new_location
 from werkzeug.utils import secure_filename, redirect
 map = Blueprint('map', __name__,
                         template_folder='templates')
@@ -14,8 +14,10 @@ map = Blueprint('map', __name__,
 @map.route('/locations_datatables/', methods=['GET'])
 def browse_locations_datatables():
     data = Location.query.all()
+    retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
+    add_url = url_for('map.add_location')
     try:
-        return render_template('browse_datatables.html',data=data)
+        return render_template('browse_datatables.html', add_url=add_url,retrieve_url=retrieve_url, Location=Location, data=data)
     except TemplateNotFound:
         abort(404)
 
@@ -31,13 +33,24 @@ def browse_locations(page):
     per_page = 20
     pagination = Location.query.paginate(page, per_page, error_out=False)
     data = pagination.items
+    add_url = url_for('map.add_location')
     retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
     try:
-        return render_template('browse_locations.html',retrieve_url=retrieve_url, Location=Location, data=data,pagination=pagination)
+        return render_template('browse_locations.html',add_url=add_url, retrieve_url=retrieve_url, Location=Location, data=data,pagination=pagination)
     except TemplateNotFound:
         abort(404)
 
+@map.route('/locations/new', methods=['POST', 'GET'])
+def add_location():
+    form = new_location()
+    if form.validate_on_submit():
+        location = Location(title=form.title.data, longitude=form.longitude.data, latitude=form.latitude.data, population=form.population.data)
+        db.session.add(location)
+        db.session.commit()
+        flash('Congratulations, you just add a new location')
+        return redirect(url_for('map.browse_locations_datatables'))
 
+    return render_template('new_location.html', form=form)
 
 @map.route('/api/locations/', methods=['GET'])
 def api_locations():
