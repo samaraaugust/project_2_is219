@@ -20,9 +20,7 @@ def browse_locations_datatables():
         abort(404)
 
 @map.route('/locations/map/<int:location_id>')
-@login_required
-
-def retrieve_user(location_id):
+def retrieve_location(location_id):
     location = Location.query.get(location_id)
     return render_template('location_view.html', location=location)
 
@@ -33,8 +31,9 @@ def browse_locations(page):
     per_page = 20
     pagination = Location.query.paginate(page, per_page, error_out=False)
     data = pagination.items
+    retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
     try:
-        return render_template('browse_locations.html',data=data,pagination=pagination)
+        return render_template('browse_locations.html',retrieve_url=retrieve_url, Location=Location, data=data,pagination=pagination)
     except TemplateNotFound:
         abort(404)
 

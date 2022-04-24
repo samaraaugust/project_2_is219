@@ -11,7 +11,9 @@
         <a href="{{ url_for("map.map_locations") }}" class="btn col-3 mb-5 btn-info" role="button">Open Map</a>
         </div>
         <h2>Locations</h2>
-        {{ render_table(data) }}
+{#        {{ render_table(data) }}#}
+        {{ render_table(data,show_actions=True, table_classes='table-striped', header_classes='thead-dark', responsive=True, responsive_class='table-responsive-sm', model=Location,
+            view_url=retrieve_url) }}
 {#        {% from 'bootstrap5/pagination.html' import render_pagination %}#}
 {#        {{ render_pagination(pagination) }}#}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
