@@ -11,7 +11,7 @@
         <h2>Browse Locations</h2>
 {#        {{ render_table(data) }}#}
         {{ render_table(data,show_actions=True, table_classes='table-striped', header_classes='thead-dark', responsive=True, responsive_class='table-responsive-sm', model=Location,
-            view_url=retrieve_url, new_url=add_url) }}
+            view_url=retrieve_url, delete_url=delete_url, new_url=add_url) }}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>

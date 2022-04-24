@@ -16,8 +16,9 @@ def browse_locations_datatables():
     data = Location.query.all()
     retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
     add_url = url_for('map.add_location')
+    delete_url = ('map.delete_location', [('location_id', ':id')])
     try:
-        return render_template('browse_datatables.html', add_url=add_url,retrieve_url=retrieve_url, Location=Location, data=data)
+        return render_template('browse_datatables.html', delete_url=delete_url, add_url=add_url,retrieve_url=retrieve_url, Location=Location, data=data)
     except TemplateNotFound:
         abort(404)
 
@@ -51,6 +52,14 @@ def add_location():
         return redirect(url_for('map.browse_locations_datatables'))
 
     return render_template('new_location.html', form=form)
+
+@map.route('/locations/<int:location_id>/delete', methods=['POST'])
+def delete_location(location_id):
+    location = Location.query.get(location_id)
+    db.session.delete(location)
+    db.session.commit()
+    flash('Location Deleted', 'success')
+    return redirect(url_for('map.browse_locations_datatables'), 302)
 
 @map.route('/api/locations/', methods=['GET'])
 def api_locations():
