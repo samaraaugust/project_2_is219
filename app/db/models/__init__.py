@@ -21,6 +21,9 @@ class Location(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = relationship("User", back_populates="locations", uselist=False)
 
+    def get_id(self):
+        return unicode(self.id)
+
     def __init__(self, title, longitude, latitude, population):
         self.title = title
         self.longitude = longitude

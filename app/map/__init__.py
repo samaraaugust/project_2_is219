@@ -13,14 +13,18 @@ map = Blueprint('map', __name__,
 
 @map.route('/locations_datatables/', methods=['GET'])
 def browse_locations_datatables():
-
     data = Location.query.all()
-
     try:
         return render_template('browse_datatables.html',data=data)
     except TemplateNotFound:
         abort(404)
 
+@map.route('/locations/map/<int:location_id>')
+@login_required
+
+def retrieve_user(location_id):
+    location = Location.query.get(location_id)
+    return render_template('location_view.html', location=location)
 
 @map.route('/locations', methods=['GET'], defaults={"page": 1})
 @map.route('/locations/<int:page>', methods=['GET'])
@@ -33,6 +37,8 @@ def browse_locations(page):
         return render_template('browse_locations.html',data=data,pagination=pagination)
     except TemplateNotFound:
         abort(404)
+
+
 
 @map.route('/api/locations/', methods=['GET'])
 def api_locations():

@@ -70,3 +70,4 @@ def user_loader(user_id):
         return User.query.get(int(user_id))
     except:
         return None
+
