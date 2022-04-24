@@ -17,8 +17,9 @@ def browse_locations_datatables():
     retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
     add_url = url_for('map.add_location')
     delete_url = ('map.delete_location', [('location_id', ':id')])
+    edit_url = ('map.edit_locations', [('location_id', ':id')])
     try:
-        return render_template('browse_datatables.html', delete_url=delete_url, add_url=add_url,retrieve_url=retrieve_url, Location=Location, data=data)
+        return render_template('browse_datatables.html', delete_url=delete_url, add_url=add_url, edit_url=edit_url, retrieve_url=retrieve_url, Location=Location, data=data)
     except TemplateNotFound:
         abort(404)
 
@@ -35,9 +36,10 @@ def browse_locations(page):
     pagination = Location.query.paginate(page, per_page, error_out=False)
     data = pagination.items
     add_url = url_for('map.add_location')
+    edit_url = ('map.edit_locations', [('location_id', ':id')])
     retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
     try:
-        return render_template('browse_locations.html',add_url=add_url, retrieve_url=retrieve_url, Location=Location, data=data,pagination=pagination)
+        return render_template('browse_locations.html',edit_url=edit_url, add_url=add_url, retrieve_url=retrieve_url, Location=Location, data=data,pagination=pagination)
     except TemplateNotFound:
         abort(404)
 
@@ -52,6 +54,22 @@ def add_location():
         return redirect(url_for('map.browse_locations_datatables'))
 
     return render_template('new_location.html', form=form)
+
+@map.route('/locations/<int:location_id>/edit', methods=['POST', 'GET'])
+@login_required
+def edit_locations(location_id):
+    location = Location.query.get(location_id)
+    form = edit_location(obj=location)
+    if form.validate_on_submit():
+        location.title = form.title.data
+        location.longitude = form.longitude.data
+        location.latitude = form.latitude.data
+        location.population = form.population.data
+        db.session.add(location)
+        db.session.commit()
+        flash('Location Edited Successfully')
+        return redirect(url_for('map.browse_locations_datatables'))
+    return render_template('location_edit.html', form=form)
 
 @map.route('/locations/<int:location_id>/delete', methods=['POST'])
 def delete_location(location_id):
