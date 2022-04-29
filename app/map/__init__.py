@@ -15,6 +15,8 @@ map = Blueprint('map', __name__,
 @login_required
 def browse_locations_datatables():
     data = Location.query.all()
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: browse_locations_datatables")
     retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
     add_url = url_for('map.add_location')
     delete_url = ('map.delete_location', [('location_id', ':id')])
@@ -27,6 +29,8 @@ def browse_locations_datatables():
 @map.route('/locations/map/<int:location_id>')
 @login_required
 def retrieve_location(location_id):
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: retrieve_locations")
     location = Location.query.get(location_id)
     return render_template('location_view.html', location=location)
 
@@ -34,6 +38,8 @@ def retrieve_location(location_id):
 @map.route('/locations/<int:page>', methods=['GET', 'POST'])
 @login_required
 def browse_locations(page):
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: browse_locations")
     page = page
     per_page = 20
     pagination = Location.query.paginate(page, per_page, error_out=False)
@@ -49,6 +55,8 @@ def browse_locations(page):
 @map.route('/locations/new', methods=['POST', 'GET'])
 @login_required
 def add_location():
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: add_location")
     form = new_location()
     if form.validate_on_submit():
         location = Location(title=form.title.data, longitude=form.longitude.data, latitude=form.latitude.data, population=form.population.data)
@@ -62,6 +70,8 @@ def add_location():
 @map.route('/locations/<int:location_id>/edit', methods=['POST', 'GET'])
 @login_required
 def edit_locations(location_id):
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: edit_locations")
     location = Location.query.get(location_id)
     form = edit_location(obj=location)
     if form.validate_on_submit():
@@ -78,6 +88,8 @@ def edit_locations(location_id):
 @map.route('/locations/<int:location_id>/delete', methods=['POST'])
 @login_required
 def delete_location(location_id):
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: delete_location")
     location = Location.query.get(location_id)
     db.session.delete(location)
     db.session.commit()
@@ -87,6 +99,8 @@ def delete_location(location_id):
 @map.route('/api/locations/', methods=['GET'])
 @login_required
 def api_locations():
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: api_locations")
     data = Location.query.all()
     try:
         return jsonify(data=[location.serialize() for location in data])
@@ -97,9 +111,9 @@ def api_locations():
 @map.route('/locations/map', methods=['GET'])
 @login_required
 def map_locations():
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: map_locations")
     google_api_key = current_app.config.get('GOOGLE_API_KEY')
-    #log = logging.getLogger("myApp")
-    #log.info(google_api_key)
     try:
         return render_template('map_locations.html',google_api_key=google_api_key)
     except TemplateNotFound:
@@ -108,9 +122,14 @@ def map_locations():
 @map.route('/locations/upload', methods=['POST', 'GET'])
 @login_required
 def upload():
+    log3 = logging.getLogger("request")
+    log3.info("Request Method: upload")
     form = csv_upload()
     if form.validate_on_submit():
+        log = logging.getLogger("myApp")
+        log2 = logging.getLogger("csv")
         filename = secure_filename(form.file.data.filename)
+        log2.info("CSV Uploaded: " + filename)
         filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         form.file.data.save(filepath)
         list_of_locations = []
