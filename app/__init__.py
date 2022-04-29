@@ -16,6 +16,7 @@ from app.auth import auth
 from app.cli import create_database
 from app.map import map
 from flask_cors import CORS
+from app.logging_config import log_con
 from flask_login import (
     UserMixin,
     login_user,
@@ -52,6 +53,7 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(map)
     app.register_blueprint(database)
+    app.register_blueprint(log_con)
     app.context_processor(utility_text_processors)
     #app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'Simplex'
     app.register_error_handler(404, page_not_found)
