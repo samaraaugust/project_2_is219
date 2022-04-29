@@ -12,3 +12,13 @@ def init_db():
 
 def get_db():
     return db
+
+@database.before_app_first_request
+def create_db_file_if_does_not_exist():
+    root = config.Config.BASE_DIR
+    # set the name of the apps log folder to logs
+    dbdir = os.path.join(root, '..', config.Config.DB_DIR)
+    # make a directory if it doesn't exist
+    if not os.path.exists(dbdir):
+        os.mkdir(dbdir)
+    db.create_all()
