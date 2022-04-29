@@ -12,6 +12,7 @@ map = Blueprint('map', __name__,
                         template_folder='templates')
 
 @map.route('/locations_datatables/', methods=['GET'])
+@login_required
 def browse_locations_datatables():
     data = Location.query.all()
     retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
@@ -24,12 +25,14 @@ def browse_locations_datatables():
         abort(404)
 
 @map.route('/locations/map/<int:location_id>')
+@login_required
 def retrieve_location(location_id):
     location = Location.query.get(location_id)
     return render_template('location_view.html', location=location)
 
-@map.route('/locations', methods=['GET'], defaults={"page": 1})
-@map.route('/locations/<int:page>', methods=['GET'])
+@map.route('/locations', methods=['GET', 'POST'], defaults={"page": 1})
+@map.route('/locations/<int:page>', methods=['GET', 'POST'])
+@login_required
 def browse_locations(page):
     page = page
     per_page = 20
@@ -44,6 +47,7 @@ def browse_locations(page):
         abort(404)
 
 @map.route('/locations/new', methods=['POST', 'GET'])
+@login_required
 def add_location():
     form = new_location()
     if form.validate_on_submit():
@@ -72,6 +76,7 @@ def edit_locations(location_id):
     return render_template('location_edit.html', form=form)
 
 @map.route('/locations/<int:location_id>/delete', methods=['POST'])
+@login_required
 def delete_location(location_id):
     location = Location.query.get(location_id)
     db.session.delete(location)
@@ -80,6 +85,7 @@ def delete_location(location_id):
     return redirect(url_for('map.browse_locations_datatables'), 302)
 
 @map.route('/api/locations/', methods=['GET'])
+@login_required
 def api_locations():
     data = Location.query.all()
     try:
@@ -89,6 +95,7 @@ def api_locations():
 
 
 @map.route('/locations/map', methods=['GET'])
+@login_required
 def map_locations():
     google_api_key = current_app.config.get('GOOGLE_API_KEY')
     #log = logging.getLogger("myApp")

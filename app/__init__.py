@@ -46,7 +46,7 @@ def create_app():
     login_manager.login_view = "auth.login"
     csrf = CSRFProtect(app)
     csrf.exempt(auth)
-    app.config['WTF_CSRF_ENABLED'] = False
+    #app.config['WTF_CSRF_ENABLED'] = False
     bootstrap = Bootstrap5(app)
     app.register_blueprint(simple_pages)
     app.register_blueprint(auth)
