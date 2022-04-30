@@ -8,7 +8,7 @@ import os
 from app.logging_config.log_formatters import RequestFormatter
 import os
 from flask_sqlalchemy import SQLAlchemy
-from app.db import create_db_file_if_does_not_exist, create_upload_folder
+#from app.db import create_db_file_if_does_not_exist, create_upload_folder
 log_con = flask.Blueprint('log_con', __name__)
 
 @log_con.before_app_request
