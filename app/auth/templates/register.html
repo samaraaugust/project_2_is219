@@ -13,6 +13,21 @@
                 <div class="progress">
                     <div id="p-bar" class="progress-bar" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+                <div id="lowercase" style="color: red;">
+                    Password Contains Lowercase Letters
+                </div>
+                <div id="uppercase" style="color: red;">
+                    Password Contains Uppercase Letters
+                </div>
+                <div id="symbols" style="color: red;">
+                    Password Contains Symbols
+                </div>
+                <div id="numbers" style="color: red;">
+                    Password Contains Numbers Letters
+                </div>
+                <div id="lengthL" style="color: red;">
+                    Password is at a Least 6 Characters Long
+                </div>
             </div>
 
         </div>
@@ -31,10 +46,18 @@
     <script>
         var passwordField = document.getElementById("password");
         var letter = document.getElementById("letter");
+
+        var letterLC = document.getElementById("lowercase");
+        var letterUC = document.getElementById("uppercase");
+        var letterSym = document.getElementById("symbols");
+        var letterNum = document.getElementById("numbers");
+        var letterLen = document.getElementById("lengthL");
         var lowerCase = 0;
         var width_num = 0;
         var upperCase = 0;
         var symbolVal = 0;
+        var actSymbol = 0;
+        var lengthVal = 0;
         passwordField.onfocus = function () {
             var message = document.getElementById("message");
             message.style.display = "block";
@@ -46,61 +69,108 @@
             let lowerCaseLetters = /[a-z]/g;
             let upperCaseLetters = /[A-Z]/g;
             let specialSymbols = /[0-9]/g;
+            let actualSymbols = /[^A-Za-z0-9]/g;
+            let lengthSym = /(?=.{6,})/g;
+
             if (width_num === 0)
             {
                 progress_bar.style.width = width_num + "%";
             }
-
+            //symbols
+            if (passwordField.value.match(actualSymbols)) {
+                if (actSymbol === 0) {
+                    width_num = width_num + 20;
+                    progress_bar.style.width = width_num + "%";
+                    actSymbol = 1;
+                    console.log("width act sym add: ", width_num);
+                    letterSym.style.color = "green";
+                }
+            } else {
+                if ((width_num >= 20)  && (actSymbol === 1))
+                {
+                    width_num = width_num - 20;
+                    progress_bar.style.width = width_num + "%";
+                    actSymbol = 0;
+                    console.log("width act: ", width_num)
+                    letterSym.style.color = "red";
+                }
+            }
+            //length
+            if (passwordField.value.match(lengthSym)) {
+                if (lengthVal === 0) {
+                    width_num = width_num + 20;
+                    progress_bar.style.width = width_num + "%";
+                    lengthVal = 1;
+                    console.log("width length add: ", width_num);
+                    letterLen.style.color = "green";
+                }
+            } else {
+                if ((width_num >= 20)  && (lengthVal === 1))
+                {
+                    width_num = width_num - 20;
+                    progress_bar.style.width = width_num + "%";
+                    lengthVal = 0;
+                    console.log("width length: ", width_num)
+                    letterLen.style.color = "red";
+                }
+            }
+            //lower
             if (passwordField.value.match(lowerCaseLetters)) {
                 if (lowerCase === 0) {
-                    width_num = width_num + 33;
+                    width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     lowerCase = 1;
                     console.log("width lower add: ", width_num);
+                    letterLC.style.color = "green";
                 }
             } else {
-                if ((width_num >= 33)  && (lowerCase === 1))
+                if ((width_num >= 20)  && (lowerCase === 1))
                 {
-                    width_num = width_num - 33;
+                    width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     lowerCase = 0;
                     console.log("width lower: ", width_num)
+                    letterLC.style.color = "red";
                 }
             }
-
+            //upper case
             if (passwordField.value.match(upperCaseLetters)) {
                 if (upperCase === 0) {
-                    width_num = width_num + 33;
+                    width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     upperCase = 1;
                     console.log("width upper add: ", width_num);
+                    letterUC.style.color = "green";
                 }
             } else {
 
-                if ((width_num >= 33) && (upperCase === 1))
+                if ((width_num >= 20) && (upperCase === 1))
                 {
-                    width_num = width_num - 33;
+                    width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     upperCase = 0;
                     console.log("width upper: ", width_num)
+                    letterUC.style.color = "red";
                 }
             }
-
+            //numbers
             if (passwordField.value.match(specialSymbols)) {
                 if (symbolVal === 0) {
-                    width_num = width_num + 34;
+                    width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     symbolVal = 1;
                     console.log("width symbol add: ", width_num);
+                    letterNum.style.color = "green";
                 }
             } else {
 
-                if ((width_num >= 34) && (symbolVal === 1))
+                if ((width_num >= 20) && (symbolVal === 1))
                 {
-                    width_num = width_num - 34;
+                    width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     symbolVal = 0;
                     console.log("width symbol: ", width_num)
+                    letterNum.style.color = "red";
                 }
             }
             /*
