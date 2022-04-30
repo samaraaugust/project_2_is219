@@ -11,7 +11,8 @@ class login_form(FlaskForm):
 
     password = PasswordField('Password', [
         validators.DataRequired(),
-        validators.length(min=6, max=35)
+        validators.length(min=6, max=35),
+        validators.regexp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,})', message="Invalid Password")
     ])
     submit = SubmitField()
 

@@ -7,7 +7,7 @@
             <h2>Register</h2>
             {{ render_form(form) }}
         </div>
-        <div id="message" class="col-5">
+        <div id="message" class="col-5" style="display: none">
             <div id="letter" class="red">
                 Password Checker
                 <div class="progress">
@@ -58,12 +58,17 @@
         var symbolVal = 0;
         var actSymbol = 0;
         var lengthVal = 0;
+        var message = document.getElementById("message");
         passwordField.onfocus = function () {
-            var message = document.getElementById("message");
+
             message.style.display = "block";
             message.style.border = "1px solid";
         }
 
+
+        passwordField.onblur = function () {
+            message.style.display = "none";
+        }
         passwordField.onkeyup = function () {
             var progress_bar = document.getElementById("p-bar");
             let lowerCaseLetters = /[a-z]/g;
@@ -82,7 +87,7 @@
                     width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     actSymbol = 1;
-                    console.log("width act sym add: ", width_num);
+                    //console.log("width act sym add: ", width_num);
                     letterSym.style.color = "green";
                 }
             } else {
@@ -91,7 +96,7 @@
                     width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     actSymbol = 0;
-                    console.log("width act: ", width_num)
+                    //console.log("width act: ", width_num)
                     letterSym.style.color = "red";
                 }
             }
@@ -101,7 +106,7 @@
                     width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     lengthVal = 1;
-                    console.log("width length add: ", width_num);
+                    //console.log("width length add: ", width_num);
                     letterLen.style.color = "green";
                 }
             } else {
@@ -110,7 +115,7 @@
                     width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     lengthVal = 0;
-                    console.log("width length: ", width_num)
+                    //console.log("width length: ", width_num)
                     letterLen.style.color = "red";
                 }
             }
@@ -120,7 +125,7 @@
                     width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     lowerCase = 1;
-                    console.log("width lower add: ", width_num);
+                    //console.log("width lower add: ", width_num);
                     letterLC.style.color = "green";
                 }
             } else {
@@ -129,7 +134,7 @@
                     width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     lowerCase = 0;
-                    console.log("width lower: ", width_num)
+                    //console.log("width lower: ", width_num)
                     letterLC.style.color = "red";
                 }
             }
@@ -139,7 +144,7 @@
                     width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     upperCase = 1;
-                    console.log("width upper add: ", width_num);
+                    //console.log("width upper add: ", width_num);
                     letterUC.style.color = "green";
                 }
             } else {
@@ -149,7 +154,7 @@
                     width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     upperCase = 0;
-                    console.log("width upper: ", width_num)
+                    //console.log("width upper: ", width_num)
                     letterUC.style.color = "red";
                 }
             }
@@ -159,7 +164,7 @@
                     width_num = width_num + 20;
                     progress_bar.style.width = width_num + "%";
                     symbolVal = 1;
-                    console.log("width symbol add: ", width_num);
+                    //console.log("width symbol add: ", width_num);
                     letterNum.style.color = "green";
                 }
             } else {
@@ -169,33 +174,11 @@
                     width_num = width_num - 20;
                     progress_bar.style.width = width_num + "%";
                     symbolVal = 0;
-                    console.log("width symbol: ", width_num)
+                    //console.log("width symbol: ", width_num)
                     letterNum.style.color = "red";
                 }
             }
-            /*
-            var progress_bar = document.getElementById("p-bar");
-            // Validate lowercase letters
-            let lowerCaseLetters = /[a-z]/g;
-            let upperCaseLetters = /[A-Z]/g;
-            let specialSymbols = /[0-9]/g;
-            let new_width_value;
-            if(lowerCase === 0) {
-                let p_bar_width_string = progress_bar.style.width;
-                let width_current_value = parseInt(p_bar_width_string.substring(0, p_bar_width_string.length - 1));
-                width_current_value = width_current_value + 33;
-                let width_string_new_value = width_current_value.toString();
-                new_width_value = width_string_new_value.concat("%");
-            } else {
-                new_width_value = progress_bar.style.width;
-            }
-            if (passwordField.value.match(lowerCaseLetters)) {
-                progress_bar.style.width = new_width_value;
-                lowerCase = 1;
-            } else {
-                progress_bar.style.width = "0%";
-                lowerCase = 0;
-            }*/
+            
         }
 
 
