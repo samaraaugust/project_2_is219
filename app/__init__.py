@@ -42,12 +42,13 @@ def create_app():
         app.config.from_object("app.config.DevelopmentConfig")
     elif os.environ.get("FLASK_ENV") == "testing":
         app.config.from_object("app.config.TestingConfig")
+        app.config['WTF_CSRF_ENABLED'] = False
     app.secret_key = 'This is an INSECURE secret!! DO NOT use this in production!!'
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
     csrf = CSRFProtect(app)
     #csrf.exempt(auth)
-    app.config['WTF_CSRF_ENABLED'] = False
+
     bootstrap = Bootstrap5(app)
     app.register_blueprint(simple_pages)
     app.register_blueprint(auth)
@@ -64,7 +65,7 @@ def create_app():
     app.cli.add_command(create_database)
     db.init_app(app)
     api_v1_cors_config = {
-        "methods": ["OPTIONS", "GET", "POST"],
+        "methods": ["OPTIONS", "GET", "POST", "DELETE"],
     }
     CORS(app, resources={"/api/*": api_v1_cors_config})
 
