@@ -7,4 +7,4 @@ def test_csv_upload(client, auth):
     response2 = client.post("/locations/upload", data=data)
     print(response2.data)
     assert response2.status_code == 302
-    assert response2.headers["Location"] == "/locations"
+    assert response2.headers["Location"] == "/locations_datatables/"

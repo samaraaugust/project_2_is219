@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename, redirect
 map = Blueprint('map', __name__,
                         template_folder='templates')
 
-@map.route('/locations_datatables/', methods=['GET'])
+@map.route('/locations_datatables/', methods=['GET', 'POST'])
 @login_required
 def browse_locations_datatables():
     data = Location.query.all()
@@ -34,24 +34,6 @@ def retrieve_location(location_id):
     location = Location.query.get(location_id)
     return render_template('location_view.html', location=location)
 
-@map.route('/locations', methods=['GET', 'POST'], defaults={"page": 1})
-@map.route('/locations/<int:page>', methods=['GET', 'POST'])
-@login_required
-def browse_locations(page):
-    log3 = logging.getLogger("request")
-    log3.info("Request Method: browse_locations")
-    page = page
-    per_page = 20
-    pagination = Location.query.paginate(page, per_page, error_out=False)
-    data = pagination.items
-    add_url = url_for('map.add_location')
-    edit_url = ('map.edit_locations', [('location_id', ':id')])
-    retrieve_url = ('map.retrieve_location', [('location_id', ':id')])
-    try:
-        return render_template('browse_locations.html',edit_url=edit_url, add_url=add_url, retrieve_url=retrieve_url, Location=Location, data=data,pagination=pagination)
-    except TemplateNotFound:
-        abort(404)
-
 @map.route('/locations/new', methods=['POST', 'GET'])
 @login_required
 def add_location():
@@ -60,9 +42,9 @@ def add_location():
     form = new_location()
     if form.validate_on_submit():
         location = Location(title=form.title.data, longitude=form.longitude.data, latitude=form.latitude.data, population=form.population.data)
-        db.session.add(location)
+        current_user.locations = current_user.locations + [location]
         db.session.commit()
-        flash('Congratulations, you just add a new location')
+        flash('Congratulations, you just add a new location', 'success')
         return redirect(url_for('map.browse_locations_datatables'))
 
     return render_template('new_location.html', form=form)
@@ -81,7 +63,7 @@ def edit_locations(location_id):
         location.population = form.population.data
         db.session.add(location)
         db.session.commit()
-        flash('Location Edited Successfully')
+        flash('Location Edited Successfully', 'success')
         return redirect(url_for('map.browse_locations_datatables'))
     return render_template('location_edit.html', form=form)
 
@@ -115,7 +97,7 @@ def map_locations():
     log3.info("Request Method: map_locations")
     google_api_key = current_app.config.get('GOOGLE_API_KEY')
     try:
-        return render_template('map_locations.html',google_api_key=google_api_key)
+        return render_template('map_locations.html', google_api_key=google_api_key)
     except TemplateNotFound:
         abort(404)
 
@@ -141,7 +123,7 @@ def upload():
 
         current_user.locations = list_of_locations
         db.session.commit()
-        return redirect(url_for('map.browse_locations'))
+        return redirect(url_for('map.browse_locations_datatables'))
     try:
         return render_template('upload_map.html', form=form)
     except TemplateNotFound:
